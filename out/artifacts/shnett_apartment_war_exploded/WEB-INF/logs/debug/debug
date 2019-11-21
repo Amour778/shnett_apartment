@@ -1,0 +1,23 @@
+2019-11-14 04:43:11  [ http-nio-8888-exec-6:6069136 ] - [ INFO ]  {code=1, openid=oavp45KDUn3DJHb9YsbiqXdIjoRU, userid=, info=BIND}
+2019-11-14 04:48:26  [ http-nio-8888-exec-5:6384043 ] - [ INFO ]  {code=0, openid=oavp45KDUn3DJHb9YsbiqXdIjoRU, userid=LS7010lWcJ, info=正常获取用户信息}
+2019-11-14 04:48:52  [ http-nio-8888-exec-8:6410996 ] - [ INFO ]  {code=0, openid=oavp45KDUn3DJHb9YsbiqXdIjoRU, userid=01059101, info=正常获取用户信息}
+2019-11-14 04:51:51  [ http-nio-8888-exec-9:6589560 ] - [ INFO ]  apartmentApplyList.size()=0
+2019-11-14 04:51:51  [ http-nio-8888-exec-6:6589568 ] - [ INFO ]  apartmentApplyList.size()=0
+2019-11-14 04:52:52  [ http-nio-8888-exec-1:6650482 ] - [ INFO ]  apartmentApplyList.size()=4
+2019-11-14 04:55:01  [ http-nio-8888-exec-7:6779942 ] - [ INFO ]  apartmentApplyList.size()=4
+2019-11-14 04:59:25  [ http-nio-8888-exec-4:7043726 ] - [ INFO ]  用户工号01059101,入住的公寓ID为:A20191022110639563
+2019-11-14 05:00:19  [ http-nio-8888-exec-7:7097097 ] - [ INFO ]  当前用户：01059101,在当前年：2019,当前月：11，获取到的签到数据条数为：1
+2019-11-14 05:05:03  [ http-nio-8888-exec-10:7381104 ] - [ INFO ]  username=01059101
+2019-11-14 05:05:03  [ http-nio-8888-exec-10:7381104 ] - [ INFO ]  password=047e8dced7330921bffc6c584a1ca43825c334cf
+2019-11-14 05:05:38  [ http-nio-8888-exec-7:7416758 ] - [ INFO ]  apartmentApplyList.size()=0
+2019-11-14 05:05:38  [ http-nio-8888-exec-8:7416787 ] - [ INFO ]  apartmentApplyList.size()=0
+2019-11-14 05:05:41  [ http-nio-8888-exec-9:7419644 ] - [ INFO ]  apartmentApplyList.size()=4
+2019-11-14 05:05:55  [ http-nio-8888-exec-6:7433372 ] - [ INFO ]  apartmentApplyList.size()=4
+2019-11-14 05:11:50  [ http-nio-8888-exec-7:7788721 ] - [ INFO ]  apartmentApplyList.size()=4
+2019-11-14 05:11:57  [ http-nio-8888-exec-9:7795793 ] - [ INFO ]  apartmentApplyList.size()=4
+2019-11-14 05:12:30  [ http-nio-8888-exec-10:7828013 ] - [ INFO ]  apartmentApplyList.size()=2
+2019-11-14 05:12:30  [ http-nio-8888-exec-4:7828057 ] - [ INFO ]  apartmentApplyList.size()=2
+2019-11-14 05:12:33  [ http-nio-8888-exec-5:7831569 ] - [ INFO ]  apartmentApplyList.size()=1
+2019-11-14 05:14:00  [ http-nio-8888-exec-9:7918116 ] - [ INFO ]  apartmentApplyList.size()=1
+2019-11-14 05:32:16  [ http-nio-8888-exec-4:82160 ] - [ INFO ]  {code=1, openid=oavp45KDUn3DJHb9YsbiqXdIjoRU, userid=, info=BIND}
+2019-11-14 05:35:32  [ http-nio-8888-exec-1:278016 ] - [ INFO ]  {code=1, openid=oavp45KDUn3DJHb9YsbiqXdIjoRU, userid=, info=BIND}

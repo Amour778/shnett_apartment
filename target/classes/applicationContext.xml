@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/data/jpa
+	http://www.springframework.org/schema/data/jpa/spring-jpa-1.8.xsd
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"
+	default-autowire="byName" default-lazy-init="true">
+
+
+	<!-- 加载配置文件数据 -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:info.properties</value>
+				<value>classpath:config/redis.properties</value>
+				<value>classpath*:config/token.properties</value>
+			</list>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</bean>
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}"></property>
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager" />
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"></bean>
+	<bean id="UserInfoDao" class="com.workplan.dao.UserInfoDao" />
+	<bean id="RoleDao" class="com.workplan.dao.RoleDao" />
+	<bean id="PermissionDao" class="com.workplan.dao.PermissionDao" />
+
+	<bean id="MenuDao" class="com.workplan.dao.MenuDao"/>
+	<bean id="MailDao" class="com.workplan.dao.MailDao"/>
+	<bean id="LoginLogDao" class="com.workplan.dao.LoginLogDao"/>
+	<bean id="NetworkDao" class="com.workplan.dao.apartment.NetworkDao"/>
+	<bean id="ApartmentApplyDao" class="com.workplan.dao.apartment.ApartmentApplyDao"/>
+	<bean id="ApartmentInfoDao" class="com.workplan.dao.apartment.ApartmentInfoDao"/>
+	<bean id="ApartmentRoomDao" class="com.workplan.dao.apartment.ApartmentRoomDao"/>
+	<bean id="ApartmentBedDao" class="com.workplan.dao.apartment.ApartmentBedDao"/>
+	<bean id="NoticeDao" class="com.workplan.dao.apartment.NoticeDao"/>
+	<bean id="ScoreDao" class="com.workplan.dao.apartment.ScoreDao"/>
+	<bean id="SignInDao" class="com.workplan.dao.apartment.SignInDao"/>
+
+	<context:component-scan base-package="com.workplan.handler,com.workplan.handler.wx">
+	</context:component-scan>
+	<!-- 注册MVC注解驱动 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+				<property name="supportedMediaTypes"  value="text/html;charset=UTF-8"/>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	<!--@Value读取配置文件-->
+	<bean id="propertiesReader"
+		  class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>classpath*:config/token.properties</value>
+			</list>
+		</property>
+		<!-- 设置编码格式 -->
+		<property name="fileEncoding" value="UTF-8"></property>
+	</bean>
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/pages/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	 <!--缓存管理器-->
+	<bean id = "shiroSpringCacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"/>
+	<bean id="myRealm" class="com.workplan.handler.MyShiroRealm" ></bean>
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="myRealm" />
+         <!--将缓存管理器，交给安全管理器-->
+        <property name="cacheManager" ref="shiroSpringCacheManager"/>
+	</bean>
+	<!-- mvc:resources是对静态资源的设置
+		location参数表示实际路径
+		mapping参数表示引用路径
+	-->
+	<mvc:resources location="/WEB-INF/pages/static/assets/**"  mapping="assets/**" />
+	<mvc:resources location="/WEB-INF/pages/static/module/**"  mapping="module/**" />
+
+	<aop:config proxy-target-class="true"/>
+	<!-- shiro 验证注解start 
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+-->
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/login" />
+		<property name="successUrl" value="/index#!home_console" />
+		<property name="unauthorizedUrl" value="/unauthorized" />
+		<property name="filterChainDefinitions">
+			<value>
+			<!-- 此处的URL访问设置请看com.workplan.handlet.FilterChainDefinitionMapBuilder.java，有此类动态加载 -->
+				<!--加载静态资源
+				/assets/** = anon
+				/components/** = anon
+				/json/** = anon
+				/module/** = anon
+				-->
+				<!--
+				/login = anon
+				/tologin = anon
+				/IdentifyingCode = anon
+	
+				/logout = logout
+	
+				/index = authc
+				/main = authc
+				/** = authc-->
+			</value>
+		</property>
+	</bean>
+	<bean id="filterChainDefinitionMap"
+	    factory-bean="filterChainDefinitionMapBuilder" factory-method="buildFilterChainDefinitionMap"/>
+	 
+	<bean id="filterChainDefinitionMapBuilder"
+	    	class="com.workplan.handler.FilterChainDefinitionMapBuilder"/>
+
+
+	<!--授权认证配置 begin-->
+
+	<!--通过Key获得对应用户的bean-->
+	<bean id="userRepository" class="com.workplan.bean.UserInfoBean"/>
+
+	<mvc:interceptors>
+		<!--身份验证的拦截器-->
+		<bean id="authorizationInterceptor" class="com.workplan.handler.wx.jwtToken.interceptor.AuthorizationInterceptor">
+			<!--验证信息存储的Http头-->
+			<property name="httpHeaderName" value="Authorization"/>
+			<!--验证信息通用前缀，例如Bearer-->
+			<property name="httpHeaderPrefix" value=""/>
+			<!--验证失败时的错误信息-->
+			<property name="unauthorizedErrorMessage" value="invalid&#x0020;token"/>
+			<!--管理验证信息的bean-->
+			<property name="manager" ref="tokenManager"/>
+			<!--token验证器-->
+			<property name="validator" ref="tokenValidator"/>
+		</bean>
+	</mvc:interceptors>
+
+	<!--管理验证信息的bean-->
+	<bean id="tokenValidator" class="com.workplan.handler.wx.jwtToken.JwtTokenValidator"></bean>
+
+	<!--Redis配置-->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<!--最大连接数-->
+		<property name="maxTotal" value="${redis.maxTotal}" />
+		<!--最大空闲连接数-->
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<!--初始化连接数-->
+		<property name="minIdle" value="${redis.minIdle}"/>
+		<!--最大等待时间-->
+		<property name="maxWaitMillis" value="${redis.maxWaitMillis}" />
+		<!--对拿到的connection进行validateObject校验-->
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+		<!--在进行returnObject对返回的connection进行validateObject校验-->
+		<property name="testOnReturn" value="${redis.testOnReturn}" />
+		<!--定时对线程池中空闲的链接进行validateObject校验-->
+		<property name="testWhileIdle" value="true" />
+	</bean>
+
+	<!--Redis连接池-->
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+		<constructor-arg index="0" ref="jedisPoolConfig"/>
+		<constructor-arg index="1" value="${redis.host}"/>
+		<constructor-arg index="2" value="${redis.port}" type="int"/>
+		<constructor-arg index="3" value="${redis.timeout}" type="int"/>
+		<constructor-arg index="4" value="${redis.password}"/>
+	</bean>
+
+	<!--管理验证信息的bean-->
+	<bean id="tokenManager" class="com.workplan.handler.wx.jwtToken.manager.impl.RedisTokenManager">
+		<!--Redis客户端连接池配置-->
+		<property name="jedisPool" ref="jedisPool"/>
+		<!--Token失效时间-->
+		<property name="tokenExpireSeconds" value="${token.expire.seconds}"/>
+		<!--一个用户是否可以绑定多个Token-->
+		<property name="singleTokenWithUser" value="${single.token.with.user}"/>
+		<!--在每次有效操作后刷新过期时间-->
+		<property name="flushExpireAfterOperation" value="${flush.expire.after.operation}"/>
+	</bean>
+
+	<!--授权认证配置 end-->
+</beans>
+
